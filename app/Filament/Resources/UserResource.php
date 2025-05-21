@@ -17,36 +17,40 @@ class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    // Tambahkan label untuk menu Users di sidebar
-    protected static ?string $navigationLabel = 'Users';
-
-    // Tambahkan icon agar lebih sesuai
-    protected static ?string $navigationIcon = 'heroicon-o-users';
-
-    // Pastikan Users ada di grup "Management" di bawah Dashboard
-    public static function getNavigationGroup(): ?string
-    {
-        return null;
-    }
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static function form(Form $form): Form
-    {
-        return $form
-            ->schema([
-                Forms\Components\TextInput::make('name')->required(),
-                Forms\Components\TextInput::make('email')->email()->required(),
-                Forms\Components\TextInput::make('password')->password()->required(),
-            ]);
-    }
+{
+    return $form
+        ->schema([
+            Forms\Components\TextInput::make('name')
+                ->label('Nama')
+                ->required()
+                ->maxLength(255),
+
+            Forms\Components\TextInput::make('email')
+                ->label('Email')
+                ->email()
+                ->required()
+                ->unique(ignoreRecord: true),
+
+            Forms\Components\TextInput::make('password')
+                ->label('Password')
+                ->password()
+                ->required()
+                ->maxLength(255),
+        ]);
+}
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')->sortable(),
-                Tables\Columns\TextColumn::make('email')->sortable(),
+                Tables\Columns\TextColumn::make('name')->label('Nama'),
+            Tables\Columns\TextColumn::make('email')->label('Email'),
             ])
-            ->filters([])
+            ->filters([
+            ])
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])
@@ -55,6 +59,13 @@ class UserResource extends Resource
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
+    }
+
+    public static function getRelations(): array
+    {
+        return [
+            //
+        ];
     }
 
     public static function getPages(): array
